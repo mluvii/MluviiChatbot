@@ -16,6 +16,8 @@ def home():
     if request.method == 'GET':
         return 'OK'
     else:
+        print("Data to parse")
+        print(request.data)
         data = json.loads(request.data)
         print(data)
 
