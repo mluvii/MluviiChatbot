@@ -2,3 +2,4 @@
 /APIBot/venv
 /APIBot/.idea
 /APIBot/__pycache__
+.env

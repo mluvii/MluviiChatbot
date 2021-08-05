@@ -9,7 +9,6 @@ import datetime
 from urllib3.exceptions import InsecureRequestWarning
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 @app.route('/', methods=['POST', 'GET'])
@@ -20,7 +19,7 @@ def home():
         data = json.loads(request.data)
         print(data)
 
-        if 'activity' in data and 'Ping' in data['activity']:
+        if 'Activity' in data and 'Ping' in data['Activity']:
             return 'OK'
 
         if 'activity' in data and 'sessionId' in data:
@@ -333,4 +332,5 @@ def send_request(payload):
         raise NameError('Response not successful')
 
 
-app.run(host='localhost', port=50001)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
