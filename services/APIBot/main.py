@@ -18,7 +18,12 @@ def home():
     else:
         print("Data to parse")
         print(request.data)
-        data = json.loads(request.data)
+        try:
+            data = json.loads(request.data)
+        except ValueError as e:
+            activity_data = message_payload('Bad Request',0)
+            send_request(activity_data)
+
         print(data)
 
         if 'Activity' in data and 'Ping' in data['Activity']:

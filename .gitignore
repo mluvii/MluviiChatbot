@@ -4,3 +4,6 @@
 /APIBot/__pycache__
 .env
 *.save
+/services/APIBot/venv
+/services/APIBot/__pycache__
+/services/APIBot/.idea
