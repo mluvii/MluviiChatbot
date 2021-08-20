@@ -11,18 +11,24 @@ from urllib3.exceptions import InsecureRequestWarning
 app = flask.Flask(__name__)
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
-@app.route('/', methods=['POST', 'GET'])
-def home():
+@app.route('/testbot', methods=['POST', 'GET'])
+def chatbot():
     if request.method == 'GET':
         return 'OK'
     else:
-        print("Data to parse")
-        print(request.data)
+        botToUse = None
+        if(request.args.get('botName') == "Bot1"):
+            botToUse = bots[0]
+        if (request.args.get('botName') == "Bot2"):
+            botToUse = bots[1]
+        if botToUse is None:
+            return "Wrong chatbot", 400
+
         try:
             data = json.loads(request.data)
         except ValueError as e:
-            activity_data = message_payload('Bad Request',0)
-            send_request(activity_data)
+            activity_data = message_payload('Bad Request')
+            send_request(activity_data, botToUse)
 
         print(data)
 
@@ -36,83 +42,83 @@ def home():
             if 'text' in data:
                if data['text'] == 'GetAvailableOperators':
                    req = message_get_available_operators(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
 
                if data['text'] == 'GetAvailableGroups':
                    req = message_get_available_groups(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
 
                if data['text'] == 'GetHeroCards':
                    req = message_get_hero_cards(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'GetCallParams':
                    req = message_get_call_params(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if 'SendHeroCard' in data['text']:
                    hcId = data['text'].split(' ', 1)[1]
                    req = message_send_hero_card(data.get('sessionId'), hcId)
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'HandOff':
                    req = message_hand_off(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'EndConversation':
                    req = message_end_conversation(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'Typing':
                    req = message_typing(data.get('sessionId'), True)
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'NotTyping':
                    req = message_typing(data.get('sessionId'), False)
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'DisableGuestInput':
                    req = message_disable_guest_input(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'EnableGuestInput':
                    req = message_enable_guest_input(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'DisableGuestInput':
                    req = message_disable_guest_input(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'EnableGuestUpload':
                    req = message_enable_guest_upload(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'DisableGuestUpload':
                    req = message_disable_guest_upload(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'Carousel':
                    req = message_carousel(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'Buttons':
                    req = message_buttons(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'Hello':
                    req = message_hello(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
                if data['text'] == 'ChatbotOpenFileUploadPrompt':
                    req = message_chatbot_open_file_upload_prompt(data.get('sessionId'))
-                   send_request(req)
+                   send_request(req, botToUse)
                    return 'OK'
 
 
             payload = message_payload(json.dumps(data), data.get('sessionId'))
-            send_request(payload)
+            send_request(payload, botToUse)
             return 'OK'
 
         raise NameError('Bad Request')
@@ -333,11 +339,12 @@ def message_hello(session_id):
         "text": "Hello world"
     }
 
-def send_request(payload):
-    response = requests.post(f'{base_url}/api/v1/Chatbot/{chatbot_id}/activity', headers=get_headers(), data=json.dumps(payload), verify=False)
+def send_request(payload, bot):
+    print("bot id: " + str(bot.chatbot_id))
+    response = requests.post(f'{base_url}/api/v1/Chatbot/{str(bot.chatbot_id)}/activity', headers=get_headers(bot), data=json.dumps(payload), verify=False)
     if response.status_code != 200 and response.status_code != 201:
         raise NameError('Response not successful')
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5000)
