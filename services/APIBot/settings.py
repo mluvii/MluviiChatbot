@@ -9,8 +9,8 @@ class bot:
 
 access_token = None
 bots = []
-base_url = "https://appdev.mluvii.com"
-#base_url = "https://localhost:44301"
+#base_url = "https://appdev.mluvii.com"
+
 
 botOne = bot(4005003, "c625e32d04813c82290b33125d062d57", "61f20aa808561b08d1e8773493f47935")
 botTwo = bot(2005003, "99890faddf1774c488dbff34acb954d7", "04507eef6f2f799ed9c8ce47bf63a5fb")
@@ -20,6 +20,10 @@ botTwo = bot(2005003, "99890faddf1774c488dbff34acb954d7", "04507eef6f2f799ed9c8c
 
 bots.append(botOne)
 bots.append(botTwo)
+
+def set_base_url(url):
+    global base_url
+    base_url= url
 
 def get_access_token(bot):
     global access_token
