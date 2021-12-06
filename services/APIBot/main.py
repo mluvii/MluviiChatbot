@@ -14,12 +14,12 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 @app.route('/testbot', methods=['POST', 'GET'])
 def chatbot():
     if request.method == 'GET':
-        serverUrl = request.host_url
+        serverUrl = request.host
         print('serverUrl: ' + serverUrl)
         return 'OK'
     else:
         botToUse = None
-        serverUrl = request.host_url
+        serverUrl = request.host
         print('serverUrl: ' + serverUrl)
         if(request.args.get('botName') == "Bot1"):
             botToUse = bots[0]
@@ -32,7 +32,7 @@ def chatbot():
             data = json.loads(request.data)
         except ValueError as e:
             activity_data = message_payload('Bad Request')
-            send_request(activity_data, botToUse)
+            send_request(activity_data, botToUse, serverUrl)
 
         print(data)
 
@@ -122,21 +122,10 @@ def chatbot():
 
 
             payload = message_payload(json.dumps(data), data.get('sessionId'))
-            send_request(payload, botToUse)
+            send_request(payload, botToUse,serverUrl)
             return 'OK'
 
         raise NameError('Bad Request')
-
-
-def process_guest_input(data):
-    print("process_guest_input" + data)
-    try:
-        print("Parsed data" + data);
-        activity_data = json.loads(remove_tags(html.unescape(data.get('text'))))
-    except:
-        activity_data = message_payload('Bad Request', data.get('sessionId'))
-
-    send_request(activity_data)
 
 
 def message_payload(message, session_id):
@@ -345,7 +334,7 @@ def message_hello(session_id):
 
 def send_request(payload, bot,serverUrl):
     print("bot id: " + str(bot.chatbot_id))
-    response = requests.post(f'{serverUrl}/api/v1/Chatbot/{str(bot.chatbot_id)}/activity', headers=get_headers(bot,serverUrl), data=json.dumps(payload), verify=False)
+    response = requests.post(f'https://{serverUrl}/api/v1/Chatbot/{str(bot.chatbot_id)}/activity', headers=get_headers(bot,serverUrl), data=json.dumps(payload), verify=False)
     if response.status_code != 200 and response.status_code != 201:
         raise NameError('Response not successful')
 

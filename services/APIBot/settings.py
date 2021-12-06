@@ -28,7 +28,7 @@ def set_base_url(url):
 def get_access_token(bot,serverUrl):
     global access_token
 
-    url = f'{serverUrl}/login/connect/token'
+    url = f'https://{serverUrl}/login/connect/token'
     #url = f'https://localhost:5000/login/connect/token'
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded'
