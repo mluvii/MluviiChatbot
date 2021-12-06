@@ -25,10 +25,10 @@ def set_base_url(url):
     global base_url
     base_url= url
 
-def get_access_token(bot):
+def get_access_token(bot,serverUrl):
     global access_token
 
-    url = f'{base_url}/login/connect/token'
+    url = f'{serverUrl}/login/connect/token'
     #url = f'https://localhost:5000/login/connect/token'
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -49,8 +49,8 @@ def get_access_token(bot):
     else:
         raise Exception("Could not retrieve access token.")
 
-def get_headers(bot):
+def get_headers(bot, serverUrl):
     return {
-        'Authorization': f'Bearer {get_access_token(bot)}',
+        'Authorization': f'Bearer {get_access_token(bot, serverUrl)}',
         'Content-Type': 'application/json'
     }
