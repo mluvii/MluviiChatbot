@@ -20,6 +20,8 @@ def chatbot():
     else:
         botToUse = None
         serverUrl = request.host
+        if(serverUrl == "localhost:5001"):
+            serverUrl = "localhost:44301"
         print('serverUrl: ' + serverUrl)
         if(request.args.get('botName') == "Bot1"):
             botToUse = bots[0]
@@ -46,80 +48,95 @@ def chatbot():
             if 'text' in data:
                if data['text'] == 'GetAvailableOperators':
                    req = message_get_available_operators(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
 
                if data['text'] == 'GetAvailableGroups':
                    req = message_get_available_groups(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
 
                if data['text'] == 'GetHeroCards':
                    req = message_get_hero_cards(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'GetCallParams':
                    req = message_get_call_params(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if 'SendHeroCard' in data['text']:
                    hcId = data['text'].split(' ', 1)[1]
                    req = message_send_hero_card(data.get('sessionId'), hcId)
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'HandOff':
                    req = message_hand_off(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'EndConversation':
                    req = message_end_conversation(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'Typing':
                    req = message_typing(data.get('sessionId'), True)
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'NotTyping':
                    req = message_typing(data.get('sessionId'), False)
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'DisableGuestInput':
                    req = message_disable_guest_input(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'EnableGuestInput':
                    req = message_enable_guest_input(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'DisableGuestInput':
                    req = message_disable_guest_input(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'EnableGuestUpload':
                    req = message_enable_guest_upload(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'DisableGuestUpload':
                    req = message_disable_guest_upload(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'Carousel':
                    req = message_carousel(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'Buttons':
                    req = message_buttons(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'Hello':
                    req = message_hello(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
                if data['text'] == 'ChatbotOpenFileUploadPrompt':
                    req = message_chatbot_open_file_upload_prompt(data.get('sessionId'))
-                   send_request(req, botToUse,serverUrl)
+                   send_request(req, botToUse, serverUrl)
                    return 'OK'
-
+               if data['text'] == 'SendImage':
+                   req = send_image(data.get('sessionId'))
+                   send_request(req, botToUse, serverUrl)
+                   return 'OK'
+               if data['text'] == 'SendYoutubeLink':
+                   req = send_youtube_video(data.get('sessionId'))
+                   send_request(req, botToUse, serverUrl)
+                   return 'OK'
+               if data['text'] == 'SendMp4Link':
+                   req = send_mp4_video(data.get('sessionId'))
+                   send_request(req, botToUse, serverUrl)
+                   return 'OK'
+               if data['text'] == 'GetMediaObjects':
+                   req = get_media_objects(data.get('sessionId'))
+                   send_request(req, botToUse, serverUrl)
+                   return 'OK'
 
             payload = message_payload(json.dumps(data), data.get('sessionId'))
             send_request(payload, botToUse,serverUrl)
@@ -332,7 +349,34 @@ def message_hello(session_id):
         "text": "Hello world"
     }
 
-def send_request(payload, bot,serverUrl):
+def send_image(session_id):
+    return {
+        "sessionId": session_id,
+        "activity": "Text",
+        "text": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg"
+    }
+
+def send_youtube_video(session_id):
+    return {
+        "sessionId": session_id,
+        "activity": "Text",
+        "text": "https://www.youtube.com/watch?v=DQFKmzUhQg8&ab_channel=mluvii"
+    }
+
+def send_mp4_video(session_id):
+    return {
+        "sessionId": session_id,
+        "activity": "Text",
+        "text": "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+    }
+
+def get_media_objects(session_id):
+    return {
+        "sessionId": session_id,
+        "activity": "GetMediaObjects",
+    }
+
+def send_request(payload, bot, serverUrl):
     print("bot id: " + str(bot.chatbot_id))
     response = requests.post(f'https://{serverUrl}/api/v1/Chatbot/{str(bot.chatbot_id)}/activity', headers=get_headers(bot,serverUrl), data=json.dumps(payload), verify=False)
     if response.status_code != 200 and response.status_code != 201:
