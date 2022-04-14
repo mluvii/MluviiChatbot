@@ -21,14 +21,19 @@ def chatbot():
         botToUse = None
         serverUrl = request.host
         if(serverUrl == "localhost:5001"):
-            serverUrl = "localhost:44301"
+            serverUrl = "local.mluvii.com"
         print('serverUrl: ' + serverUrl)
         if(request.args.get('botName') == "Bot1"):
             botToUse = bots[0]
         if (request.args.get('botName') == "Bot2"):
             botToUse = bots[1]
         if botToUse is None:
-            return "Wrong chatbot", 400
+            chatbot_id = request.args.get('id')
+            client_id = request.args.get('client_id')
+            client_secret = request.args.get('client_secret')
+            if chatbot_id is None or client_id is None or client_secret is None:
+                return "Wrong chatbot or bad parameters", 400
+            botToUse = bot(chatbot_id, client_id, client_secret)
 
         try:
             data = json.loads(request.data)
