@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   web:
-    build: ./services/APIbot
+    build: ./services/APIBot
     volumes:
-      - ./services/APIbot/:/usr/src/app/
+      - ./services/APIBot/:/usr/src/app/
     ports:
       - 5000:5000
     env_file:
