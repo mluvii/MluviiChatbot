@@ -142,6 +142,10 @@ def chatbot():
                    req = get_media_objects(data.get('sessionId'))
                    send_request(req, botToUse, serverUrl)
                    return 'OK'
+               if data['text'] == 'SendYoutubeUsingShareFile':
+                   req = send_youtube_using_share_file(data.get('sessionId'))
+                   send_request(req, botToUse, serverUrl)
+                   return 'OK'
 
             payload = message_payload(json.dumps(data), data.get('sessionId'))
             send_request(payload, botToUse,serverUrl)
@@ -379,6 +383,13 @@ def get_media_objects(session_id):
     return {
         "sessionId": session_id,
         "activity": "GetMediaObjects",
+    }
+
+def send_youtube_using_share_file(session_id):
+    return {
+        "sessionId": session_id,
+        "activity": "ShareFile",
+        "url": "https://www.youtube.com/watch?v=DQFKmzUhQg8&ab_channel=mluvii"
     }
 
 def send_request(payload, bot, serverUrl):
