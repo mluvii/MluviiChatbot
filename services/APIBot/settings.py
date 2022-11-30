@@ -23,13 +23,15 @@ bots.append(botTwo)
 
 def set_base_url(url):
     global base_url
-    base_url= url
+    base_url = url
 
-def get_access_token(bot,serverUrl):
+def get_base_url():
+    return base_url
+
+def get_access_token(bot):
     global access_token
 
-    url = f'https://{serverUrl}/login/connect/token'
-    #url = f'https://localhost:5000/login/connect/token'
+    url = f'{base_url}/login/connect/token'
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded'
     }
@@ -49,8 +51,8 @@ def get_access_token(bot,serverUrl):
     else:
         raise Exception("Could not retrieve access token.")
 
-def get_headers(bot, serverUrl):
+def get_headers(bot):
     return {
-        'Authorization': f'Bearer {get_access_token(bot, serverUrl)}',
+        'Authorization': f'Bearer {get_access_token(bot)}',
         'Content-Type': 'application/json'
     }

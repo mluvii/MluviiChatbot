@@ -14,14 +14,12 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 @app.route('/testbot', methods=['POST', 'GET'])
 def chatbot():
     if request.method == 'GET':
-        serverUrl = request.host
+        serverUrl = get_base_url()
         print('serverUrl: ' + serverUrl)
         return 'OK'
     else:
         botToUse = None
-        serverUrl = request.host
-        if(serverUrl == "localhost:5001"):
-            serverUrl = "local.mluvii.com"
+        serverUrl = get_base_url()
         print('serverUrl: ' + serverUrl)
         if(request.args.get('botName') == "Bot1"):
             botToUse = bots[0]
@@ -383,7 +381,7 @@ def get_media_objects(session_id):
 
 def send_request(payload, bot, serverUrl):
     print("bot id: " + str(bot.chatbot_id))
-    response = requests.post(f'https://{serverUrl}/api/v1/Chatbot/{str(bot.chatbot_id)}/activity', headers=get_headers(bot,serverUrl), data=json.dumps(payload), verify=False)
+    response = requests.post(f'{serverUrl}/api/v1/Chatbot/{str(bot.chatbot_id)}/activity', headers=get_headers(bot), data=json.dumps(payload), verify=False)
     if response.status_code != 200 and response.status_code != 201:
         raise NameError('Response not successful')
 
